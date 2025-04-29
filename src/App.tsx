@@ -76,7 +76,7 @@ const App = () => {
         </button>
       </form>
 
-      <div className="grid gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Todo
           tasks={tasks.filter((task) => task.status === "todo")}
           updateStatus={updateTaskStatus}
