@@ -1,0 +1,3 @@
+first of all created the localstorage hook
+and after than added the components 
+now apply the tailwind css with three border for each component and make the better ui
