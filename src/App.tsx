@@ -4,6 +4,7 @@ import Ongoing from "./components/Ongoing";
 import Todo from "./components/Todo";
 import useLocalStorage from "./hooks/useLocalStorage";
 import Task, { TaskStatus } from "./types/Task";
+import { DndContext, DragEndEvent } from "@dnd-kit/core";
 
 const App = () => {
   const [tasks, setTasks] = useLocalStorage<Task[]>("tasks", []);
@@ -12,6 +13,20 @@ const App = () => {
     description: "",
     status: "todo",
   });
+
+  function handleDragEnd(e: DragEndEvent) {
+    const {active,over} = e
+    if(!over) {
+      return
+    }
+    const taskId = active.id as string
+    const newStatus = over.id as TaskStatus
+
+    setTasks(tasks.map((task) => task.id === taskId ? {
+      ...task,
+      status: newStatus
+    } : task))
+  }
 
   const handleInputChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     e.preventDefault();
@@ -91,6 +106,7 @@ const App = () => {
       </form>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <DndContext onDragEnd={handleDragEnd}>
         <Todo
           tasks={tasks.filter((task) => task.status === "todo")}
           updateStatus={updateTaskStatus} updateTask={updateTask}
@@ -103,6 +119,7 @@ const App = () => {
         <Completed
           tasks={tasks.filter((task) => task.status === "completed")}
         />
+        </DndContext>
       </div>
     </div>
   );
