@@ -13,14 +13,14 @@ const App = () => {
     status: "todo",
   });
 
-  const handleInputChange : React.ChangeEventHandler<HTMLInputElement> = (e) => {
+  const handleInputChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     e.preventDefault();
     const { name, value } = e.target;
     // console.log("handleChagen", { name, value });
-    setNewTask({ ...newTask, [name]: value })
+    setNewTask({ ...newTask, [name]: value });
   };
 
-  const addTask = (e:React.FormEvent) => {
+  const addTask = (e: React.FormEvent) => {
     e.preventDefault();
     if (newTask.title.trim() && newTask.description.trim()) {
       setTasks([...tasks, { ...newTask, id: crypto.randomUUID().toString() }]);
@@ -36,6 +36,20 @@ const App = () => {
         return {
           ...v,
           status: status,
+        };
+      })
+    );
+  };
+
+  const updateTask = (id: string, updatedTask: Partial<Task>) => {
+    setTasks(
+      tasks.map((task) => {
+        if (task.id !== id) {
+          return task;
+        }
+        return {
+          ...task,
+          ...updatedTask,
         };
       })
     );
@@ -79,11 +93,12 @@ const App = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Todo
           tasks={tasks.filter((task) => task.status === "todo")}
-          updateStatus={updateTaskStatus}
+          updateStatus={updateTaskStatus} updateTask={updateTask}
         />
         <Ongoing
           tasks={tasks.filter((task) => task.status === "ongoing")}
           updateStatus={updateTaskStatus}
+          // updateTask={updateTask}
         />
         <Completed
           tasks={tasks.filter((task) => task.status === "completed")}
