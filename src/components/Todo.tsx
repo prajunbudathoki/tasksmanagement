@@ -10,7 +10,7 @@ export default function Todo({ tasks, updateStatus }: Props) {
     <div className="bg-white p-4">
       <h2 className="text-xl font-bold mb-4 text-blue-500">Todo Tasks</h2>
       {tasks.length === 0 ? (
-        <p className="text-gray-500">No tasks avalable</p>
+        <p className="text-gray-500">No tasks to display at the moment :( </p>
       ) : (
         <ul className="space-y-4">
           {tasks.map((task, idx) => (
