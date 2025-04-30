@@ -1,4 +1,5 @@
 import Task, { TaskStatus } from '@/types/Task';
+import { Pencil } from 'lucide-react';
 
 interface Props {
   tasks: Task[]
