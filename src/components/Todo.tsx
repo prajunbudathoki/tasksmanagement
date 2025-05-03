@@ -1,99 +1,89 @@
 import Task, { TaskStatus } from "@/types/Task";
-import { useDroppable } from "@dnd-kit/core";
-// import { Pencil } from 'lucide-react'
+import { useDroppable, useDraggable } from "@dnd-kit/core";
 import { useState } from "react";
 
 interface Props {
   tasks: Task[];
-  updateStatus: (idx: string, status: TaskStatus) => void;
-  updateTask: (id: string, updatedTask: Task) => void;
+  updateStatus: (id: string, status: TaskStatus) => void;
+  updateTask: (id: string, updatedTask: Partial<Task>) => void;
 }
 
 export default function Todo({ tasks, updateStatus, updateTask }: Props) {
-  const { setNodeRef } = useDroppable({
-    id: tasks.id,
-  });
-  const [editingId, setEditingId] = useState(null);
-  const [editedTask, setEditedTask] = useState<{
-    title: string;
-    description: string;
-  }>({
-    title: "",
-    description: "",
-  });
+  const { setNodeRef: setDropRef } = useDroppable({ id: "todo" });
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editedTask, setEditedTask] = useState({ title: "", description: "" });
+
   const handleEdit = (task: Task) => {
     setEditingId(task.id);
     setEditedTask({ title: task.title, description: task.description });
   };
+
   const handleSave = (taskId: string) => {
     updateTask(taskId, editedTask);
     setEditingId(null);
   };
+
   return (
     <div className="bg-white p-4">
       <h2 className="text-xl font-bold mb-4 text-blue-500">Todo Tasks</h2>
-      <div ref={setNodeRef}>
-        {tasks.length === 0 ? (
-          <p className="text-gray-500">No tasks to display at the moment :(</p>
-        ) : (
-          <ul className="space-y-4">
-            {tasks.map((task, idx) => (
-              <li key={idx} className="p-4 border-1">
-                {editingId === task.id ? (
-                  <div>
-                    <input
-                      type="text"
-                      value={editedTask.title}
-                      onChange={(e) =>
-                        setEditedTask({ ...editedTask, title: e.target.value })
-                      }
-                      className="border p-2 w-full mb-2"
-                    />
-                    <textarea
-                      value={editedTask.description}
-                      onChange={(e) =>
-                        setEditedTask({
-                          ...editedTask,
-                          description: e.target.value,
-                        })
-                      }
-                      className="border p-2 w-full mb-2"
-                    />
-                    <button
-                      onClick={() => handleSave(task.id)}
-                      className="bg-green-400 text-white py-1 px-3 mr-2"
-                    >
-                      Save
-                    </button>
-                    <button
-                      onClick={() => setEditingId(null)}
-                      className="bg-amber-300 text-white py-1 px-3"
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                ) : (
-                  <div>
-                    <h3 className="font-bold text-xl">Title: {task.title}</h3>
-                    <p>Desc: {task.description}</p>
-                    <button
-                      onClick={() => handleEdit(task)}
-                      className="mt-2 bg-yellow-500 text-white py-1 px-3 mr-2"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => updateStatus(task.id, "ongoing")}
-                      className="mt-2 bg-yellow-500 text-white py-1 px-3"
-                    >
-                      Move to Ongoing
-                    </button>
-                  </div>
-                )}
-              </li>
-            ))}
-          </ul>
-        )}
+      <div ref={setDropRef} className="min-h-[100px] bg-blue-50 p-2 rounded">
+        {tasks.map((task) => {
+          const { setNodeRef: setDragRef, listeners, attributes } = useDraggable({
+            id: task.id,
+          });
+
+          return (
+            <div
+              key={task.id}
+              ref={setDragRef}
+              {...listeners}
+              {...attributes}
+              className="p-4 mb-2 border border-gray-300 bg-white shadow rounded cursor-grab"
+            >
+              {editingId === task.id ? (
+                <>
+                  <input
+                    className="w-full border p-1 mb-1"
+                    value={editedTask.title}
+                    onChange={(e) =>
+                      setEditedTask({ ...editedTask, title: e.target.value })
+                    }
+                  />
+                  <textarea
+                    className="w-full border p-1 mb-2"
+                    value={editedTask.description}
+                    onChange={(e) =>
+                      setEditedTask({ ...editedTask, description: e.target.value })
+                    }
+                  />
+                  <button onClick={() => handleSave(task.id)} className="bg-green-400 text-white px-3 py-1 mr-2">
+                    Save
+                  </button>
+                  <button onClick={() => setEditingId(null)} className="bg-gray-300 text-black px-3 py-1">
+                    Cancel
+                  </button>
+                </>
+              ) : (
+                <>
+                  <h3 className="font-bold">Title: {task.title}</h3>
+                  <p>Desc: {task.description}</p>
+                  <button
+                    onClick={() => handleEdit(task)}
+                    className="bg-yellow-400 text-white px-3 py-1 mr-2"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => updateStatus(task.id, "ongoing")}
+                    className="bg-blue-500 text-white px-3 py-1"
+                  >
+                    Move to Ongoing
+                  </button>
+                </>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

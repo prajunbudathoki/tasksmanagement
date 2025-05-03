@@ -22,6 +22,8 @@ const App = () => {
     const taskId = active.id as string
     const newStatus = over.id as TaskStatus
 
+    console.log(`Moving ${taskId} to ${newStatus}`);
+
     setTasks(tasks.map((task) => task.id === taskId ? {
       ...task,
       status: newStatus
@@ -45,11 +47,11 @@ const App = () => {
 
   const updateTaskStatus = (id: string, status: TaskStatus) => {
     setTasks(
-      tasks.map((v) => {
-        if (v.id != id) return v;
+      tasks.map((task) => {
+        if (task.id != id) return task;
 
         return {
-          ...v,
+          ...task,
           status: status,
         };
       })
