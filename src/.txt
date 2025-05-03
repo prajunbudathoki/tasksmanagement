@@ -7,3 +7,6 @@ now remaning work to be done to refactoring the code for now !!!!
 // to be done - apr - 30
 able to edit the title and description for todo tasks and ongoing tasks
 now create the draggale component using dnd-kit core
+
+// 3 may
+now tried to apply draggable component but encounter with issue need to be resolved 
