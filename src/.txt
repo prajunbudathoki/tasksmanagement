@@ -10,3 +10,7 @@ now create the draggale component using dnd-kit core
 
 // 3 may
 now tried to apply draggable component but encounter with issue need to be resolved 
+
+// 4may
+tryiing to fix the useDraggable hook which was called inside the loop in todo component which violates the rules of hooks
+// creating separate component for useDraggable hook
