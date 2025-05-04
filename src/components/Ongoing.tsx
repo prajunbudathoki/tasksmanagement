@@ -1,5 +1,6 @@
 import Task, { TaskStatus } from "@/types/Task";
-import { useDraggable, useDroppable } from "@dnd-kit/core";
+import { useDroppable } from "@dnd-kit/core";
+import DraggableTask from "./useDraggable";
 
 interface Props {
   tasks: Task[];
@@ -17,28 +18,9 @@ export default function Ongoing({ tasks, updateStatus }: Props) {
           <p className="text-gray-500">No tasks to display at the moment :(</p>
         ) : (
           <ul className="space-y-4">
-            {tasks.map((task) => {
-              const {
-                setNodeRef: setDragRef,
-                listeners,
-                attributes,
-              } = useDraggable({
-                id: task.id,
-              });
-
-              return (
-                <div
-                  key={task.id}
-                  ref={setDragRef}
-                  {...listeners}
-                  {...attributes}
-                  className="p-4 mb-2 border border-gray-300 bg-white shadow rounded cursor-grab"
-                >
-                  <h3 className="font-bold">Title: {task.title}</h3>
-                  <p>Desc: {task.description}</p>
-                </div>
-              );
-            })}
+            {tasks.map((task) => (
+              <DraggableTask key={task.id} task={task} />
+            ))}
           </ul>
         )}
       </div>

@@ -7,7 +7,7 @@ interface Props {
 
 export default function Completed({ tasks }: Props) {
   const { setNodeRef } = useDroppable({
-    id: "completed", // ✅ unique drop zone
+    id: "completed",
   });
 
   return (

@@ -1,6 +1,7 @@
 import Task, { TaskStatus } from "@/types/Task";
 import { useDroppable, useDraggable } from "@dnd-kit/core";
 import { useState } from "react";
+import DraggableTask from "./useDraggable";
 
 interface Props {
   tasks: Task[];
@@ -26,7 +27,7 @@ export default function Todo({ tasks, updateStatus, updateTask }: Props) {
   return (
     <div className="bg-white p-4">
       <h2 className="text-xl font-bold mb-4 text-blue-500">Todo Tasks</h2>
-      <div ref={setDropRef} className="min-h-[100px]">
+      {/* <div ref={setDropRef} className="min-h-[100px]">
         {tasks.length === 0 ? (
           <p className="text-gray-500">No tasks to display at the moment :(</p>
         ) : (
@@ -45,7 +46,7 @@ export default function Todo({ tasks, updateStatus, updateTask }: Props) {
                   ref={setDragRef}
                   {...listeners}
                   {...attributes}
-                  className="p-4 mb-2 border border-gray-300 bg-white shadow rounded cursor-grab"
+                  className="p-4 mb-2 border border-gray-300 bg-whitecursor-grab"
                 >
                   {editingId === task.id ? (
                     <>
@@ -97,6 +98,27 @@ export default function Todo({ tasks, updateStatus, updateTask }: Props) {
                 </div>
               );
             })}
+          </ul>
+        )}
+      </div> */}
+
+      <div ref={setDropRef} className="min-h-[100px]">
+        {tasks.length === 0 ? (
+          <p className="text-gray-500">No tasks to display at the moment :(</p>
+        ) : (
+          <ul className="space-y-4">
+            {tasks.map((task) => (
+              <DraggableTask
+                key={task.id}
+                task={task}
+                editingId={editingId}
+                editedTask={editedTask}
+                setEditedTask={setEditedTask}
+                setEditingId={setEditingId}
+                handleSave={handleSave}
+                handleEdit={handleEdit}
+              />
+            ))}
           </ul>
         )}
       </div>
