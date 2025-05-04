@@ -1,6 +1,7 @@
-import { useDraggable } from "@dnd-kit/core";
+import { useSortable } from "@dnd-kit/sortable";
 import Task from "@/types/Task";
 import { SquarePen } from "lucide-react";
+import { CSS } from "@dnd-kit/utilities";
 
 interface Props {
   task: Task;
@@ -12,7 +13,7 @@ interface Props {
   handleEdit: (task: Task) => void;
 }
 
-export default function DraggableTask({
+export default function SortableTask({
   task,
   editingId,
   editedTask,
@@ -21,21 +22,20 @@ export default function DraggableTask({
   handleSave,
   handleEdit,
 }: Props) {
-  const { setNodeRef, listeners, attributes,transform } = useDraggable({
-    id: task.id,
+  const {transform,transition,attributes,listeners,setNodeRef} = useSortable({id:task.id});
+  
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition
   }
-);
-
-  return (
+  return(
     <div
       key={task.id}
       ref={setNodeRef}
-     
       {...attributes}
-      style={{
-        transform: transform ? `translate(${transform.x}px, ${transform.y}px )`: (undefined)
-      }}
-      className=" mb-2 border border-gray-300 bg-white cursor-grab flex items-center justify-between"
+      {...listeners}
+      style={style}
+      className="mb-2 border border-gray-300 bg-white cursor-grab flex items-center justify-between"
     >
       {editingId === task.id ? (
         <>
@@ -77,16 +77,17 @@ export default function DraggableTask({
           </div>
         </>
       ) : (
-        <div className="flex items-center justify-between w-full "  >
-          <div {...listeners} className="w-full p-4">
+        <div className="flex items-center justify-between w-full">
+          <div className="w-full p-4">
             <h3 className="font-bold text-2xl capitalize">{task.title}</h3>
             <p>{task.description}</p>
           </div>
           <button
-            onClick={(e) =>{ 
-              e.preventDefault()
-              e.stopPropagation()
-              handleEdit(task)}}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleEdit(task);
+            }}
             className="text-gray-500 cursor-pointer"
           >
             <SquarePen />
@@ -94,5 +95,5 @@ export default function DraggableTask({
         </div>
       )}
     </div>
-  );
+  )
 }

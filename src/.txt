@@ -15,10 +15,3 @@ now tried to apply draggable component but encounter with issue need to be resol
 tryiing to fix the useDraggable hook which was called inside the loop in todo component which violates the rules of hooks
 // creating separate component for useDraggable hook
 // now adding the transition overlay using dnd-kit
-
-
-
-
-
-
-
