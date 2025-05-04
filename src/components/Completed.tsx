@@ -1,11 +1,13 @@
 import Task from "@/types/Task";
 import { useDroppable } from "@dnd-kit/core";
+import { Trash2 } from "lucide-react";
 
 interface Props {
   tasks: Task[];
+  deleteTask: (id:string) => void
 }
 
-export default function Completed({ tasks }: Props) {
+export default function Completed({ tasks,deleteTask }: Props) {
   const { setNodeRef } = useDroppable({
     id: "completed",
   });
@@ -21,10 +23,18 @@ export default function Completed({ tasks }: Props) {
             {tasks.map((task) => (
               <li
                 key={task.id}
-                className="p-4 border border-gray-300 rounded bg-white shadow"
+                className="p-4 border border-gray-300 rounded bg-white shadow flex items-center justify-between"
               >
-                <h3 className="font-bold text-xl">Title: {task.title}</h3>
-                <p>Desc: {task.description}</p>
+                <div>
+                  <h3 className="font-bold text-xl">{task.title}</h3>
+                  <p>{task.description}</p>
+                </div>
+                <button
+                  className="text-red-500 cursor-pointer"
+                  onClick={() => deleteTask(task.id)}
+                >
+                  <Trash2 />
+                </button>
               </li>
             ))}
           </ul>

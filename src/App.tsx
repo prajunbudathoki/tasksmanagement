@@ -5,6 +5,7 @@ import Todo from "./components/Todo";
 import useLocalStorage from "./hooks/useLocalStorage";
 import Task, { TaskStatus } from "./types/Task";
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
+import './App.css'
 
 const App = () => {
   const [tasks, setTasks] = useLocalStorage<Task[]>("tasks", []);
@@ -70,11 +71,15 @@ const App = () => {
         };
       })
     );
-  };
+  }
+  
+  const deleteTask = (id: string) => {
+    setTasks(tasks.filter((task) => task.id !== id))
+  }
 
   return (
-    <div className="min-h-screen bg-gray-200 p-10">
-      <h1 className="text-3xl font-bold text-center mb-6">Task Managment</h1>
+    <div className="min-h-screen p-10" >
+      <h1 className="text-3xl text-white font-bold text-center mb-6">Task Managment</h1>
       <form
         onSubmit={addTask}
         className="bg-white p-4 mb-6 max-w-[450px] mx-auto"
@@ -120,6 +125,7 @@ const App = () => {
         />
         <Completed
           tasks={tasks.filter((task) => task.status === "completed")}
+          deleteTask={deleteTask}
         />
         </DndContext>
       </div>

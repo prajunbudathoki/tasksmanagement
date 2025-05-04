@@ -30,7 +30,7 @@ export default function DraggableTask({
       ref={setNodeRef}
       {...listeners}
       {...attributes}
-      className="p-4 mb-2 border border-gray-300 bg-white shadow rounded cursor-grab"
+      className="p-4 mb-2 border border-gray-300 bg-white cursor-grab"
     >
       {editingId === task.id ? (
         <>
@@ -69,8 +69,8 @@ export default function DraggableTask({
         </>
       ) : (
         <>
-          <h3 className="font-bold">Title: {task.title}</h3>
-          <p>Desc: {task.description}</p>
+          <h3 className="font-bold text-2xl capitalize">{task.title}</h3>
+          <p>{task.description}</p>
           <button
             onClick={() => handleEdit(task)}
             className="bg-yellow-400 text-white px-3 py-1 mr-2"

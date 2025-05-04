@@ -2,6 +2,7 @@ import Task, { TaskStatus } from "@/types/Task";
 import { useDroppable, useDraggable } from "@dnd-kit/core";
 import { useState } from "react";
 import DraggableTask from "./useDraggable";
+import { Plus } from 'lucide-react';
 
 interface Props {
   tasks: Task[];
@@ -26,7 +27,9 @@ export default function Todo({ tasks, updateStatus, updateTask }: Props) {
 
   return (
     <div className="bg-white p-4">
+      <div className="flex items-center justify-between">
       <h2 className="text-xl font-bold mb-4 text-blue-500">Todo Tasks</h2>
+      </div>
       {/* <div ref={setDropRef} className="min-h-[100px]">
         {tasks.length === 0 ? (
           <p className="text-gray-500">No tasks to display at the moment :(</p>
@@ -101,8 +104,7 @@ export default function Todo({ tasks, updateStatus, updateTask }: Props) {
           </ul>
         )}
       </div> */}
-
-      <div ref={setDropRef} className="min-h-[100px]">
+      <div ref={setDropRef} className="min-h-[60px]">
         {tasks.length === 0 ? (
           <p className="text-gray-500">No tasks to display at the moment :(</p>
         ) : (
