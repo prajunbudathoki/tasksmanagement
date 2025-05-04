@@ -26,64 +26,79 @@ export default function Todo({ tasks, updateStatus, updateTask }: Props) {
   return (
     <div className="bg-white p-4">
       <h2 className="text-xl font-bold mb-4 text-blue-500">Todo Tasks</h2>
-      <div ref={setDropRef} className="min-h-[100px] bg-blue-50 p-2 rounded">
-        {tasks.map((task) => {
-          const { setNodeRef: setDragRef, listeners, attributes } = useDraggable({
-            id: task.id,
-          });
-
-          return (
-            <div
-              key={task.id}
-              ref={setDragRef}
-              {...listeners}
-              {...attributes}
-              className="p-4 mb-2 border border-gray-300 bg-white shadow rounded cursor-grab"
-            >
-              {editingId === task.id ? (
-                <>
-                  <input
-                    className="w-full border p-1 mb-1"
-                    value={editedTask.title}
-                    onChange={(e) =>
-                      setEditedTask({ ...editedTask, title: e.target.value })
-                    }
-                  />
-                  <textarea
-                    className="w-full border p-1 mb-2"
-                    value={editedTask.description}
-                    onChange={(e) =>
-                      setEditedTask({ ...editedTask, description: e.target.value })
-                    }
-                  />
-                  <button onClick={() => handleSave(task.id)} className="bg-green-400 text-white px-3 py-1 mr-2">
-                    Save
-                  </button>
-                  <button onClick={() => setEditingId(null)} className="bg-gray-300 text-black px-3 py-1">
-                    Cancel
-                  </button>
-                </>
-              ) : (
-                <>
-                  <h3 className="font-bold">Title: {task.title}</h3>
-                  <p>Desc: {task.description}</p>
-                  <button
-                    onClick={() => handleEdit(task)}
-                    className="bg-yellow-400 text-white px-3 py-1 mr-2"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => updateStatus(task.id, "ongoing")}
-                    className="bg-blue-500 text-white px-3 py-1"
-                  >
-                    Move to Ongoing
-                  </button>
-                </>
-              )}
-            </div>
-          );
-        })}
+      <div ref={setDropRef} className="min-h-[100px]">
+        {tasks.length === 0 ? (
+          <p className="text-gray-500">No tasks to display at the moment :(</p>
+        ) : (
+          <ul className="space-y-4">
+            {tasks.map((task) => {
+              const {
+                setNodeRef: setDragRef,
+                listeners,
+                attributes,
+              } = useDraggable({
+                id: task.id,
+              });
+              return (
+                <div
+                  key={task.id}
+                  ref={setDragRef}
+                  {...listeners}
+                  {...attributes}
+                  className="p-4 mb-2 border border-gray-300 bg-white shadow rounded cursor-grab"
+                >
+                  {editingId === task.id ? (
+                    <>
+                      <input
+                        className="w-full border p-1 mb-1"
+                        value={editedTask.title}
+                        onChange={(e) =>
+                          setEditedTask({
+                            ...editedTask,
+                            title: e.target.value,
+                          })
+                        }
+                      />
+                      <textarea
+                        className="w-full border p-1 mb-2"
+                        value={editedTask.description}
+                        onChange={(e) =>
+                          setEditedTask({
+                            ...editedTask,
+                            description: e.target.value,
+                          })
+                        }
+                      />
+                      <button
+                        onClick={() => handleSave(task.id)}
+                        className="bg-green-400 text-white px-3 py-1 mr-2"
+                      >
+                        Save
+                      </button>
+                      <button
+                        onClick={() => setEditingId(null)}
+                        className="bg-gray-300 text-black px-3 py-1"
+                      >
+                        Cancel
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <h3 className="font-bold">Title: {task.title}</h3>
+                      <p>Desc: {task.description}</p>
+                      <button
+                        onClick={() => handleEdit(task)}
+                        className="bg-yellow-400 text-white px-3 py-1 mr-2"
+                      >
+                        Edit
+                      </button>
+                    </>
+                  )}
+                </div>
+              );
+            })}
+          </ul>
+        )}
       </div>
     </div>
   );
