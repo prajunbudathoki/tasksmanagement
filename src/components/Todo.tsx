@@ -16,11 +16,13 @@ export default function Todo({ tasks, updateStatus, updateTask }: Props) {
   const [editedTask, setEditedTask] = useState({ title: "", description: "" });
 
   const handleEdit = (task: Task) => {
+    console.log("editing task: ",task)
     setEditingId(task.id);
     setEditedTask({ title: task.title, description: task.description });
   };
 
   const handleSave = (taskId: string) => {
+    console.log("saving button",taskId)
     updateTask(taskId, editedTask);
     setEditingId(null);
   };

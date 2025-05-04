@@ -4,8 +4,13 @@ import Ongoing from "./components/Ongoing";
 import Todo from "./components/Todo";
 import useLocalStorage from "./hooks/useLocalStorage";
 import Task, { TaskStatus } from "./types/Task";
-import { DndContext, DragEndEvent } from "@dnd-kit/core";
-import './App.css'
+import { DndContext, DragEndEvent, DragOverlay } from "@dnd-kit/core";
+import "./App.css";
+
+interface DropAnimation {
+  duration: number;
+  easing: string;
+}
 
 const App = () => {
   const [tasks, setTasks] = useLocalStorage<Task[]>("tasks", []);
@@ -14,21 +19,28 @@ const App = () => {
     description: "",
     status: "todo",
   });
+  const [activeTask, setActiveTask] = useState<Task | null>(null);
 
   function handleDragEnd(e: DragEndEvent) {
-    const {active,over} = e
-    if(!over) {
-      return
+    const { active, over } = e;
+    if (!over) {
+      return;
     }
-    const taskId = active.id as string
-    const newStatus = over.id as TaskStatus
+    const taskId = active.id as string;
+    const newStatus = over.id as TaskStatus;
 
-    console.log(`Moving ${taskId} to ${newStatus}`);
+    console.log(`mving ${taskId} to ${newStatus}`);
 
-    setTasks(tasks.map((task) => task.id === taskId ? {
-      ...task,
-      status: newStatus
-    } : task))
+    setTasks(
+      tasks.map((task) =>
+        task.id === taskId
+          ? {
+              ...task,
+              status: newStatus,
+            }
+          : task
+      )
+    );
   }
 
   const handleInputChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
@@ -71,15 +83,17 @@ const App = () => {
         };
       })
     );
-  }
-  
+  };
+
   const deleteTask = (id: string) => {
-    setTasks(tasks.filter((task) => task.id !== id))
-  }
+    setTasks(tasks.filter((task) => task.id !== id));
+  };
 
   return (
-    <div className="min-h-screen p-10" >
-      <h1 className="text-3xl text-white font-bold text-center mb-6">Task Managment</h1>
+    <div className="min-h-screen p-10">
+      <h1 className="text-4xl text-white font-bold text-center mb-6">
+        Task Managment
+      </h1>
       <form
         onSubmit={addTask}
         className="bg-white p-4 mb-6 max-w-[450px] mx-auto"
@@ -114,19 +128,32 @@ const App = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <DndContext onDragEnd={handleDragEnd}>
-        <Todo
-          tasks={tasks.filter((task) => task.status === "todo")}
-          updateStatus={updateTaskStatus} updateTask={updateTask}
-        />
-        <Ongoing
-          tasks={tasks.filter((task) => task.status === "ongoing")}
-          updateStatus={updateTaskStatus}
-          // updateTask={updateTask}
-        />
-        <Completed
-          tasks={tasks.filter((task) => task.status === "completed")}
-          deleteTask={deleteTask}
-        />
+          <Todo
+            tasks={tasks.filter((task) => task.status === "todo")}
+            updateStatus={updateTaskStatus}
+            updateTask={updateTask}
+          />
+          <Ongoing
+            tasks={tasks.filter((task) => task.status === "ongoing")}
+            updateStatus={updateTaskStatus}
+            // updateTask={updateTask}
+          />
+          <Completed
+            tasks={tasks.filter((task) => task.status === "completed")}
+            deleteTask={deleteTask}
+          />
+          <DragOverlay
+            dropAnimation={{
+              easing: "cubic-bezier(0.8, 0.67, 0.6, 1.22)",
+            }}
+          >
+            {activeTask ? (
+              <div className="p-4 border border-gray-300 bg-white shadow-lg">
+                <h3 className="font-bold text-xl">{activeTask.title}</h3>
+                <p>{activeTask.description}</p>
+              </div>
+            ) : null}
+          </DragOverlay>
         </DndContext>
       </div>
     </div>
