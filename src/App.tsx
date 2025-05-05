@@ -1,16 +1,12 @@
 import React, { useState } from "react";
-import Completed from "./components/Completed";
-import Ongoing from "./components/Ongoing";
+import { DndContext, DragEndEvent } from "@dnd-kit/core";
+import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import Todo from "./components/Todo";
+import Ongoing from "./components/Ongoing";
+import Completed from "./components/Completed";
 import useLocalStorage from "./hooks/useLocalStorage";
 import Task, { TaskStatus } from "./types/Task";
-import { DndContext, DragEndEvent } from "@dnd-kit/core";
-// import SortableTask from "./components/useSortable";
 import "./App.css";
-// import {
-//   SortableContext,
-//   verticalListSortingStrategy,
-// } from "@dnd-kit/sortable";
 
 const App = () => {
   const [tasks, setTasks] = useLocalStorage<Task[]>("tasks", []);
@@ -20,163 +16,111 @@ const App = () => {
     status: "todo",
   });
 
-  // const [editingId, setEditingId] = useState<string | null>(null);
-  // const [editedTask, setEditedTask] = useState({ title: "", description: "" });
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
 
-  // const handleEdit = (task: Task) => {
-  //   setEditingId(task.id);
-  //   setEditedTask({ title: task.title, description: task.description });
-  // };
+    if (!over) return;
 
-  // const handleSave = (taskId: string) => {
-  //   setTasks(
-  //     tasks.map((task) =>
-  //       task.id === taskId ? { ...task, ...editedTask } : task
-  //     )
-  //   );
-  //   setEditingId(null);
-  // };
+    const activeTaskId = active.id as string;
+    const overId = over.id as string;
 
-  function handleDragEnd(e: DragEndEvent) {
-    const { active, over } = e;
-    if (!over) {
-      return;
-    }
-    const taskId = active.id as string;
-    const newStatus = over.id as TaskStatus;
+    const activeTask = tasks.find((t) => t.id === activeTaskId);
+    if (!activeTask) return;
 
-    if (taskId !== newStatus) {
-      const activeTask = tasks.filter((task) => task.id === taskId);
-      console.log("activetask", activeTask);
-      const overTask = tasks.filter((task) => task.id === newStatus);
-      console.log("overtask", overTask);
+    const overColumn = ["todo", "ongoing", "completed"].includes(overId)
+      ? (overId as TaskStatus)
+      : tasks.find((t) => t.id === overId)?.status;
+
+    if (!overColumn) return;
+
+    if (activeTask.status === overColumn && active.id !== over.id) {
+      const columnTasks = tasks.filter((t) => t.status === activeTask.status);
+      const oldIndex = columnTasks.findIndex((t) => t.id === active.id);
+      const newIndex = columnTasks.findIndex((t) => t.id === over.id);
+
+      const newColumnOrder = arrayMove(columnTasks, oldIndex, newIndex);
+      const otherTasks = tasks.filter((t) => t.status !== activeTask.status);
+      setTasks([...otherTasks, ...newColumnOrder]);
     }
 
-    // console.log(`Moving ${taskId} to ${newStatus}`);
-
-    setTasks(
-      tasks.map((task) =>
-        task.id === taskId
-          ? {
-              ...task,
-              status: newStatus,
-            }
-          : task
-      )
-    );
-  }
+    if (activeTask.status !== overColumn) {
+      setTasks(
+        tasks.map((task) =>
+          task.id === activeTaskId ? { ...task, status: overColumn } : task
+        )
+      );
+    }
+  };
 
   const handleInputChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-    e.preventDefault();
     const { name, value } = e.target;
     setNewTask({ ...newTask, [name]: value });
   };
 
   const addTask = (e: React.FormEvent) => {
     e.preventDefault();
-    if (newTask.title.trim() && newTask.description.trim()) {
-      setTasks([...tasks, { ...newTask, id: crypto.randomUUID().toString() }]);
+    if (newTask.title && newTask.description) {
+      setTasks([
+        ...tasks,
+        { ...newTask, id: crypto.randomUUID(), status: "todo" },
+      ]);
       setNewTask({ title: "", description: "", status: "todo" });
     }
   };
 
-  const updateTaskStatus = (id: string, status: TaskStatus) => {
-    setTasks(
-      tasks.map((task) => {
-        if (task.id !== id) return task;
-        return {
-          ...task,
-          status: status,
-        };
-      })
-    );
-  };
-
   const updateTask = (id: string, updatedTask: Partial<Task>) => {
-    setTasks(
-      tasks.map((task) => {
-        if (task.id !== id) {
-          return task;
-        }
-        return {
-          ...task,
-          ...updatedTask,
-        };
-      })
-    );
+    setTasks(tasks.map((t) => (t.id === id ? { ...t, ...updatedTask } : t)));
   };
 
   const deleteTask = (id: string) => {
-    setTasks(tasks.filter((task) => task.id !== id));
+    setTasks(tasks.filter((t) => t.id !== id));
   };
 
   return (
-    <div className="min-h-screen p-10">
+    <div className="min-h-screen p-10 bg-gray-900">
       <h1 className="text-4xl text-white font-bold text-center mb-6">
-        Task Management
+        Task Manager
       </h1>
+
       <form
         onSubmit={addTask}
         className="bg-white p-4 mb-6 max-w-[450px] mx-auto"
       >
-        <div className="mb-4">
-          <input
-            type="text"
-            name="title"
-            placeholder="Enter the task title here...."
-            value={newTask.title}
-            onChange={handleInputChange}
-            className="w-full p-2 border border-gray-300 rounded"
-          />
-        </div>
-        <div className="mb-4">
-          <input
-            type="text"
-            name="description"
-            placeholder="Enter the task description here.."
-            value={newTask.description}
-            onChange={handleInputChange}
-            className="w-full p-2 border border-gray-300 rounded"
-          />
-        </div>
-        <button
-          type="submit"
-          className="w-full bg-amber-400 text-white py-2 cursor-pointer"
-        >
+        <input
+          name="title"
+          placeholder="Task title"
+          value={newTask.title}
+          onChange={handleInputChange}
+          className="w-full p-2 mb-2 border"
+        />
+        <input
+          name="description"
+          placeholder="Description"
+          value={newTask.description}
+          onChange={handleInputChange}
+          className="w-full p-2 mb-2 border"
+        />
+        <button type="submit" className="w-full bg-blue-500 text-white py-2">
           Add Task
         </button>
       </form>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <DndContext onDragEnd={handleDragEnd}>
+      <DndContext onDragEnd={handleDragEnd}>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Todo
-            tasks={tasks.filter((task) => task.status === "todo")}
-            updateStatus={updateTaskStatus}
+            tasks={tasks.filter((t) => t.status === "todo")}
             updateTask={updateTask}
           />
           <Ongoing
-            tasks={tasks.filter((task) => task.status === "ongoing")}
-            updateStatus={updateTaskStatus}
+            tasks={tasks.filter((t) => t.status === "ongoing")}
             updateTask={updateTask}
           />
           <Completed
-            tasks={tasks.filter((task) => task.status === "completed")}
+            tasks={tasks.filter((t) => t.status === "completed")}
             deleteTask={deleteTask}
           />
-          {/* <DragOverlay
-              dropAnimation={{
-                easing: "cubic-bezier(0.8, 0.67, 0.6, 1.22)",
-              }}
-            >
-              {activeTask ? (
-                <div className="p-4 border border-gray-300 bg-white shadow-lg">
-                  <h3 className="font-bold text-xl">{activeTask.title}</h3>
-                  <p>{activeTask.description}</p>
-                </div>
-              ) : null}
-            </DragOverlay> */}
-        </DndContext>
-      </div>
+        </div>
+      </DndContext>
     </div>
   );
 };
