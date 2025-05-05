@@ -35,7 +35,7 @@ export default function DraggableSortableTask({
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    opacity: isDragging ? 1 : 3,
+    opacity: isDragging ? 0.5 : 3,
   };
 
   const isEditing = editingId === task.id;
@@ -46,7 +46,7 @@ export default function DraggableSortableTask({
       {...attributes}
       // {...listeners}
       style={style}
-      className="relative p-4 mb-2 border border-gray-300 bg-white shadow-sm rounded cursor-grab"
+      className="group relative p-4 mb-2 border border-gray-300 bg-white shadow-sm rounded cursor-grab hover:border-blue-500 hover:shadow-md transition duration-200"
     >
       {/* grabing from the side point */}
       {/* <div
@@ -91,8 +91,8 @@ export default function DraggableSortableTask({
             <h3 className="font-bold capitalize text-xl">{task.title}</h3>
             <p>{task.description}</p>
           </div>
-          <div>
-            <button onClick={() => handleEdit(task)} className="mt-2">
+          <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-gray-500">
+            <button onClick={() => handleEdit(task)} className="mt-2  ">
               <SquarePen />
             </button>
           </div>
