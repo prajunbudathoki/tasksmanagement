@@ -2,7 +2,10 @@ import Task, { TaskStatus } from "@/types/Task";
 import { useDroppable } from "@dnd-kit/core";
 import DraggableTask from "./useDraggable";
 import { useState } from "react";
-import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import DraggableSortableTask from "./DraggableSortableTask";
 
 interface Props {
@@ -30,9 +33,10 @@ export default function Ongoing({ tasks, updateStatus, updateTask }: Props) {
   };
 
   return (
-    <div className="bg-white p-4" ref={setNodeRef}>
-      <h2 className="text-xl font-bold mb-4 text-yellow-500">Ongoing Tasks</h2>
-      {/* <div className="min-h-[100px]">
+    <div className="bg-white" ref={setNodeRef}>
+      <div className="bg-yellow-500 h-[60px]">
+        <h2 className="text-xl font-bold mb-2 p-3 text-white">Ongoing Tasks</h2>
+        {/* <div className="min-h-[100px]">
         {tasks.length === 0 ? (
           <p className="text-gray-500">No tasks to display at the moment :(</p>
         ) : (
@@ -52,31 +56,36 @@ export default function Ongoing({ tasks, updateStatus, updateTask }: Props) {
           </ul>
         )}
       </div> */}
-      <SortableContext
-              items={tasks.map((task) => task.id)}
-              strategy={verticalListSortingStrategy}
-            >
-              {tasks.length === 0 ? (
-                <div>
-                  <p className="text-gray-500">No tasks to display at the moment :(</p>
-                </div>
-              ) : (
-                <ul>
-                  {tasks.map((task) => (
-                    <DraggableSortableTask
-                      key={task.id}
-                      task={task}
-                      editingId={editingId}
-                      editedTask={editedTask}
-                      setEditingId={setEditingId}
-                      setEditedTask={setEditedTask}
-                      handleSave={handleSave}
-                      handleEdit={handleEdit}
-                    />
-                  ))}
-                </ul>
-              )}
-            </SortableContext>
+      </div>
+      <div className="p-4">
+        <SortableContext
+          items={tasks.map((task) => task.id)}
+          strategy={verticalListSortingStrategy}
+        >
+          {tasks.length === 0 ? (
+            <div>
+              <p className="text-gray-500">
+                No tasks to display at the moment :(
+              </p>
+            </div>
+          ) : (
+            <ul>
+              {tasks.map((task) => (
+                <DraggableSortableTask
+                  key={task.id}
+                  task={task}
+                  editingId={editingId}
+                  editedTask={editedTask}
+                  setEditingId={setEditingId}
+                  setEditedTask={setEditedTask}
+                  handleSave={handleSave}
+                  handleEdit={handleEdit}
+                />
+              ))}
+            </ul>
+          )}
+        </SortableContext>
+      </div>
     </div>
   );
 }

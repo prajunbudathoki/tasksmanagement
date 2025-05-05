@@ -29,33 +29,39 @@ export default function Todo({ tasks, updateTask, updateStatus }: Props) {
   };
 
   return (
-    <div className="bg-white p-4 rounded" ref={setNodeRef}>
-      <h2 className="text-xl font-bold text-blue-500 mb-2">Todo</h2>
-      <SortableContext
-        items={tasks.map((task) => task.id)}
-        strategy={verticalListSortingStrategy}
-      >
-        {tasks.length === 0 ? (
-          <div>
-            <p className="text-gray-500">No tasks to display at the moment :(</p>
-          </div>
-        ) : (
-          <ul>
-            {tasks.map((task) => (
-              <DraggableSortableTask
-                key={task.id}
-                task={task}
-                editingId={editingId}
-                editedTask={editedTask}
-                setEditingId={setEditingId}
-                setEditedTask={setEditedTask}
-                handleSave={handleSave}
-                handleEdit={handleEdit}
-              />
-            ))}
-          </ul>
-        )}
-      </SortableContext>
+    <div className="bg-white rounded" ref={setNodeRef}>
+      <div className="bg-blue-500 h-[60px]">
+        <h2 className="text-xl p-3 font-bold text-white mb-2">Todo Tasks</h2>
+      </div>
+      <div className="p-4">
+        <SortableContext
+          items={tasks.map((task) => task.id)}
+          strategy={verticalListSortingStrategy}
+        >
+          {tasks.length === 0 ? (
+            <div>
+              <p className="text-gray-500">
+                No tasks to display at the moment :(
+              </p>
+            </div>
+          ) : (
+            <ul>
+              {tasks.map((task) => (
+                <DraggableSortableTask
+                  key={task.id}
+                  task={task}
+                  editingId={editingId}
+                  editedTask={editedTask}
+                  setEditingId={setEditingId}
+                  setEditedTask={setEditedTask}
+                  handleSave={handleSave}
+                  handleEdit={handleEdit}
+                />
+              ))}
+            </ul>
+          )}
+        </SortableContext>
+      </div>
     </div>
   );
 }

@@ -18,8 +18,10 @@ export default function Completed({ tasks, deleteTask }: Props) {
   });
 
   return (
-    <div className="bg-white p-4" ref={setNodeRef}>
-      <h2 className="text-xl font-bold mb-4 text-green-500">Completed Tasks</h2>
+    <div className="bg-white" ref={setNodeRef}>
+      <div className="bg-green-500 h-[60px]">
+      <h2 className="text-xl font-bold mb-2 p-3 text-white">Completed Tasks</h2>
+      </div>
       {/* <div>
         {tasks.length === 0 ? (
           <p className="text-gray-500">No tasks to display at the moment :(</p>
@@ -45,6 +47,7 @@ export default function Completed({ tasks, deleteTask }: Props) {
           </ul>
         )}
       </div> */}
+      <div className="p-4">
       <SortableContext
         items={tasks.map((task) => task.id)}
         strategy={verticalListSortingStrategy}
@@ -63,6 +66,7 @@ export default function Completed({ tasks, deleteTask }: Props) {
           </ul>
         )}
       </SortableContext>
+      </div>
     </div>
   );
 }
