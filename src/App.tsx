@@ -4,13 +4,13 @@ import Ongoing from "./components/Ongoing";
 import Todo from "./components/Todo";
 import useLocalStorage from "./hooks/useLocalStorage";
 import Task, { TaskStatus } from "./types/Task";
-import { DndContext, DragEndEvent, DragOverlay } from "@dnd-kit/core";
-import SortableTask from "./components/useSortable";
+import { DndContext, DragEndEvent } from "@dnd-kit/core";
+// import SortableTask from "./components/useSortable";
 import "./App.css";
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
+// import {
+//   SortableContext,
+//   verticalListSortingStrategy,
+// } from "@dnd-kit/sortable";
 
 const App = () => {
   const [tasks, setTasks] = useLocalStorage<Task[]>("tasks", []);
@@ -20,22 +20,22 @@ const App = () => {
     status: "todo",
   });
 
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [editedTask, setEditedTask] = useState({ title: "", description: "" });
+  // const [editingId, setEditingId] = useState<string | null>(null);
+  // const [editedTask, setEditedTask] = useState({ title: "", description: "" });
 
-  const handleEdit = (task: Task) => {
-    setEditingId(task.id);
-    setEditedTask({ title: task.title, description: task.description });
-  };
+  // const handleEdit = (task: Task) => {
+  //   setEditingId(task.id);
+  //   setEditedTask({ title: task.title, description: task.description });
+  // };
 
-  const handleSave = (taskId: string) => {
-    setTasks(
-      tasks.map((task) =>
-        task.id === taskId ? { ...task, ...editedTask } : task
-      )
-    );
-    setEditingId(null);
-  };
+  // const handleSave = (taskId: string) => {
+  //   setTasks(
+  //     tasks.map((task) =>
+  //       task.id === taskId ? { ...task, ...editedTask } : task
+  //     )
+  //   );
+  //   setEditingId(null);
+  // };
 
   function handleDragEnd(e: DragEndEvent) {
     const { active, over } = e;
@@ -45,7 +45,14 @@ const App = () => {
     const taskId = active.id as string;
     const newStatus = over.id as TaskStatus;
 
-    console.log(`Moving ${taskId} to ${newStatus}`);
+    if (taskId !== newStatus) {
+      const activeTask = tasks.filter((task) => task.id === taskId);
+      console.log("activetask", activeTask);
+      const overTask = tasks.filter((task) => task.id === newStatus);
+      console.log("overtask", overTask);
+    }
+
+    // console.log(`Moving ${taskId} to ${newStatus}`);
 
     setTasks(
       tasks.map((task) =>
@@ -77,7 +84,6 @@ const App = () => {
     setTasks(
       tasks.map((task) => {
         if (task.id !== id) return task;
-
         return {
           ...task,
           status: status,
@@ -143,40 +149,21 @@ const App = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <DndContext onDragEnd={handleDragEnd}>
-          <SortableContext
-            items={tasks
-              .filter((task) => task.status === "todo")
-              .map((t) => t.id)}
-            strategy={verticalListSortingStrategy}
-          >
-            <Todo
-              tasks={tasks.filter((task) => task.status === "todo")}
-              updateStatus={updateTaskStatus}
-              updateTask={updateTask}
-            >
-              {tasks.map((task) => (
-                <SortableTask
-                  key={task.id}
-                  task={task}
-                  editingId={editingId}
-                  editedTask={editedTask}
-                  setEditedTask={setEditedTask}
-                  setEditingId={setEditingId}
-                  handleSave={handleSave}
-                  handleEdit={handleEdit}
-                />
-              ))}
-            </Todo>
-            <Ongoing
-              tasks={tasks.filter((task) => task.status === "ongoing")}
-              updateStatus={updateTaskStatus}
-              updateTask={updateTask}
-            />
-            <Completed
-              tasks={tasks.filter((task) => task.status === "completed")}
-              deleteTask={deleteTask}
-            />
-            {/* <DragOverlay
+          <Todo
+            tasks={tasks.filter((task) => task.status === "todo")}
+            updateStatus={updateTaskStatus}
+            updateTask={updateTask}
+          />
+          <Ongoing
+            tasks={tasks.filter((task) => task.status === "ongoing")}
+            updateStatus={updateTaskStatus}
+            updateTask={updateTask}
+          />
+          <Completed
+            tasks={tasks.filter((task) => task.status === "completed")}
+            deleteTask={deleteTask}
+          />
+          {/* <DragOverlay
               dropAnimation={{
                 easing: "cubic-bezier(0.8, 0.67, 0.6, 1.22)",
               }}
@@ -188,7 +175,6 @@ const App = () => {
                 </div>
               ) : null}
             </DragOverlay> */}
-          </SortableContext>
         </DndContext>
       </div>
     </div>
