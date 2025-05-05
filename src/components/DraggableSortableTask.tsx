@@ -1,6 +1,8 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import Task from "@/types/Task";
+import { SquarePen } from "lucide-react";
+import { GripVertical } from "lucide-react";
 
 interface Props {
   task: Task;
@@ -33,7 +35,7 @@ export default function DraggableSortableTask({
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    opacity: isDragging ? 0.5 : 1,
+    opacity: isDragging ? 1 : 3,
   };
 
   const isEditing = editingId === task.id;
@@ -42,12 +44,20 @@ export default function DraggableSortableTask({
     <div
       ref={setNodeRef}
       {...attributes}
-      {...listeners}
+      // {...listeners}
       style={style}
-      className="p-4 mb-2 border border-gray-300 bg-white shadow-sm rounded cursor-grab"
+      className="relative p-4 mb-2 border border-gray-300 bg-white shadow-sm rounded cursor-grab"
     >
+      {/* grabing from the side point */}
+      {/* <div
+        {...listeners}
+        className="absolute top-2 right-2 cursor-grab text-gray-500"
+        title="Drag"
+      >
+        <GripVertical size={20} />
+      </div> */}
       {isEditing ? (
-        <>
+        <div>
           <input
             className="w-full border p-1 mb-1"
             value={editedTask.title}
@@ -64,7 +74,7 @@ export default function DraggableSortableTask({
           />
           <button
             onClick={() => handleSave(task.id)}
-            className="bg-green-400 text-white px-3 py-1 mr-2"
+            className="bg-green-500 text-white px-3 py-1 mr-2"
           >
             Save
           </button>
@@ -74,20 +84,20 @@ export default function DraggableSortableTask({
           >
             Cancel
           </button>
-        </>
+        </div>
       ) : (
-        <>
-          <h3 className="font-bold">Title: {task.title}</h3>
-          <p>Desc: {task.description}</p>
-          <button
-            onClick={() => handleEdit(task)}
-            className="bg-yellow-400 text-white px-3 py-1 mt-2"
-          >
-            Edit
-          </button>
-        </>
+        <div className="flex items-center justify-between w-full">
+          <div {...listeners} className="w-full p-2">
+            <h3 className="font-bold capitalize text-xl">{task.title}</h3>
+            <p>{task.description}</p>
+          </div>
+          <div>
+            <button onClick={() => handleEdit(task)} className="mt-2">
+              <SquarePen />
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );
 }
-

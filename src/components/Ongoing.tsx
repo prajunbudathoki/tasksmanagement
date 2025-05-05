@@ -2,6 +2,8 @@ import Task, { TaskStatus } from "@/types/Task";
 import { useDroppable } from "@dnd-kit/core";
 import DraggableTask from "./useDraggable";
 import { useState } from "react";
+import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import DraggableSortableTask from "./DraggableSortableTask";
 
 interface Props {
   tasks: Task[];
@@ -10,7 +12,7 @@ interface Props {
 }
 
 export default function Ongoing({ tasks, updateStatus, updateTask }: Props) {
-  const { setNodeRef: setDropRef } = useDroppable({ id: "ongoing" });
+  const { setNodeRef } = useDroppable({ id: "ongoing" });
   // const { transform, transition } = useSortable({ id: "ongoing" });
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editedTask, setEditedTask] = useState({ title: "", description: "" });
@@ -28,9 +30,9 @@ export default function Ongoing({ tasks, updateStatus, updateTask }: Props) {
   };
 
   return (
-    <div className="bg-white p-4">
+    <div className="bg-white p-4" ref={setNodeRef}>
       <h2 className="text-xl font-bold mb-4 text-yellow-500">Ongoing Tasks</h2>
-      <div ref={setDropRef} className="min-h-[100px]">
+      {/* <div className="min-h-[100px]">
         {tasks.length === 0 ? (
           <p className="text-gray-500">No tasks to display at the moment :(</p>
         ) : (
@@ -49,7 +51,32 @@ export default function Ongoing({ tasks, updateStatus, updateTask }: Props) {
             ))}
           </ul>
         )}
-      </div>
+      </div> */}
+      <SortableContext
+              items={tasks.map((task) => task.id)}
+              strategy={verticalListSortingStrategy}
+            >
+              {tasks.length === 0 ? (
+                <div>
+                  <p className="text-gray-500">No tasks to display at the moment :(</p>
+                </div>
+              ) : (
+                <ul>
+                  {tasks.map((task) => (
+                    <DraggableSortableTask
+                      key={task.id}
+                      task={task}
+                      editingId={editingId}
+                      editedTask={editedTask}
+                      setEditingId={setEditingId}
+                      setEditedTask={setEditedTask}
+                      handleSave={handleSave}
+                      handleEdit={handleEdit}
+                    />
+                  ))}
+                </ul>
+              )}
+            </SortableContext>
     </div>
   );
 }

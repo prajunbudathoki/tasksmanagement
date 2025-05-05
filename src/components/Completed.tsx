@@ -1,21 +1,26 @@
 import Task from "@/types/Task";
 import { useDroppable } from "@dnd-kit/core";
-import { Trash2 } from "lucide-react";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+// import { Trash2 } from "lucide-react";
+import DraggableSortableTask from "./DraggableSortableTask";
 
 interface Props {
   tasks: Task[];
-  deleteTask: (id:string) => void
+  deleteTask: (id: string) => void;
 }
 
-export default function Completed({ tasks,deleteTask }: Props) {
+export default function Completed({ tasks, deleteTask }: Props) {
   const { setNodeRef } = useDroppable({
     id: "completed",
   });
 
   return (
-    <div className="bg-white p-4">
+    <div className="bg-white p-4" ref={setNodeRef}>
       <h2 className="text-xl font-bold mb-4 text-green-500">Completed Tasks</h2>
-      <div ref={setNodeRef}>
+      {/* <div>
         {tasks.length === 0 ? (
           <p className="text-gray-500">No tasks to display at the moment :(</p>
         ) : (
@@ -39,7 +44,25 @@ export default function Completed({ tasks,deleteTask }: Props) {
             ))}
           </ul>
         )}
-      </div>
+      </div> */}
+      <SortableContext
+        items={tasks.map((task) => task.id)}
+        strategy={verticalListSortingStrategy}
+      >
+        {tasks.length === 0 ? (
+          <div>
+            <p className="text-gray-500">
+              No tasks to display at the moment :(
+            </p>
+          </div>
+        ) : (
+          <ul>
+            {tasks.map((task) => (
+              <DraggableSortableTask key={task.id} task={task} />
+            ))}
+          </ul>
+        )}
+      </SortableContext>
     </div>
   );
 }

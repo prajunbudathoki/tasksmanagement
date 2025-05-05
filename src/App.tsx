@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
-import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import {
+  arrayMove,
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import Todo from "./components/Todo";
 import Ongoing from "./components/Ongoing";
 import Completed from "./components/Completed";
@@ -16,34 +20,38 @@ const App = () => {
     status: "todo",
   });
 
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
-
-    if (!over) return;
+  const handleDragEnd = (e: DragEndEvent) => {
+    const { active, over } = e;
+    if (!over) {
+      return;
+    }
 
     const activeTaskId = active.id as string;
+    console.log("activetaskid", activeTaskId);
     const overId = over.id as string;
+    console.log("overid", overId);
 
     const activeTask = tasks.find((t) => t.id === activeTaskId);
-    if (!activeTask) return;
-
     const overColumn = ["todo", "ongoing", "completed"].includes(overId)
       ? (overId as TaskStatus)
       : tasks.find((t) => t.id === overId)?.status;
 
-    if (!overColumn) return;
+    if (!overColumn) {
+      return;
+    }
 
-    if (activeTask.status === overColumn && active.id !== over.id) {
+    if (activeTask?.status === overColumn && active.id !== over.id) {
       const columnTasks = tasks.filter((t) => t.status === activeTask.status);
+
       const oldIndex = columnTasks.findIndex((t) => t.id === active.id);
       const newIndex = columnTasks.findIndex((t) => t.id === over.id);
-
       const newColumnOrder = arrayMove(columnTasks, oldIndex, newIndex);
+      
       const otherTasks = tasks.filter((t) => t.status !== activeTask.status);
       setTasks([...otherTasks, ...newColumnOrder]);
     }
 
-    if (activeTask.status !== overColumn) {
+    if (activeTask?.status !== overColumn) {
       setTasks(
         tasks.map((task) =>
           task.id === activeTaskId ? { ...task, status: overColumn } : task
@@ -79,28 +87,28 @@ const App = () => {
   return (
     <div className="min-h-screen p-10 bg-gray-900">
       <h1 className="text-4xl text-white font-bold text-center mb-6">
-        Task Manager
+        Task Managements
       </h1>
 
       <form
         onSubmit={addTask}
-        className="bg-white p-4 mb-6 max-w-[450px] mx-auto"
+        className="bg-white p-4 mb-6 max-w-[550px] mx-auto"
       >
         <input
           name="title"
-          placeholder="Task title"
+          placeholder="Task title hre..."
           value={newTask.title}
           onChange={handleInputChange}
-          className="w-full p-2 mb-2 border"
+          className="w-full p-2 mb-2 border text-xl"
         />
         <input
           name="description"
-          placeholder="Description"
+          placeholder="description goes here.."
           value={newTask.description}
           onChange={handleInputChange}
-          className="w-full p-2 mb-2 border"
+          className="w-full p-2 mb-2 border text-xl"
         />
-        <button type="submit" className="w-full bg-blue-500 text-white py-2">
+        <button type="submit" className="w-full bg-yellow-300 text-white py-2">
           Add Task
         </button>
       </form>
