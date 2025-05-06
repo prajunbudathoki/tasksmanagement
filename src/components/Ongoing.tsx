@@ -33,8 +33,8 @@ export default function Ongoing({ tasks, updateTask }: Props) {
 
   return (
     <div className=" ongoing-container" ref={setNodeRef}>
-      <div className="bg-yellow-500 h-[60px]">
-        <h2 className="text-xl font-bold mb-2 p-3 text-white">Ongoing Tasks</h2>
+      <div>
+        <h2 className="text-2xl font-bold mb-2 p-5 text-white">Ongoing Tasks</h2>
         {/* <div className="min-h-[100px]">
         {tasks.length === 0 ? (
           <p className="text-gray-500">No tasks to display at the moment :(</p>

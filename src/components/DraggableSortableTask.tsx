@@ -2,13 +2,10 @@ import Task from "@/types/Task";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { SquarePen, Trash2, EllipsisVertical } from "lucide-react";
-import { useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
@@ -42,12 +39,10 @@ export default function DraggableSortableTask({
     isDragging,
   } = useSortable({ id: task.id });
 
-  const [menuOpen, setMenuOpen] = useState(false);
-
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    opacity: isDragging ? 0.5 : 1,
+    opacity: isDragging ? 1 : 1,
   };
 
   const isEditing = editingId === task.id;
@@ -57,19 +52,19 @@ export default function DraggableSortableTask({
       ref={setNodeRef}
       {...attributes}
       style={style}
-      className="group relative p-4 mb-2 border border-gray-300 bg-white shadow-sm rounded cursor-grab hover:border-blue-500 hover:shadow-md transition duration-200"
+      className="group relative p-3 mb-4 bg-white shadow-sm rounded-xl cursor-grab hover:border-blue-500 hover:shadow-md transition duration-200"
     >
       {isEditing && editedTask ? (
         <div>
           <input
-            className="w-full border p-1 mb-1"
+            className="w-full border p-2 mb-2 text-lg"
             value={editedTask.title}
             onChange={(e) =>
               setEditedTask?.({ ...editedTask, title: e.target.value })
             }
           />
           <textarea
-            className="w-full border p-1 mb-2"
+            className="w-full border p-2 mb-4 text-lg"
             value={editedTask.description}
             onChange={(e) =>
               setEditedTask?.({ ...editedTask, description: e.target.value })
@@ -77,55 +72,72 @@ export default function DraggableSortableTask({
           />
           <button
             onClick={() => handleSave?.(task.id)}
-            className="bg-green-500 text-white px-3 py-1 mr-2"
+            className="bg-green-500 text-white px-4 py-2 text-lg mr-2 rounded"
           >
             Save
           </button>
           <button
             onClick={() => setEditingId?.(null)}
-            className="bg-gray-300 text-black px-3 py-1"
+            className="bg-gray-300 text-black px-4 py-2 text-lg rounded"
           >
             Cancel
           </button>
         </div>
       ) : (
-        <div className="flex items-center justify-between w-full">
+        <div className="flex items-center justify-between ">
           <div {...listeners} className="w-full p-2">
-            <h3 className="font-bold capitalize text-xl">{task.title}</h3>
-            <p>{task.description}</p>
-          </div>
-          <div className="relative">
-            <button
-              onClick={() => setMenuOpen((prev) => !prev)}
-              className="text-gray-500"
+            <h3 className="font-bold capitalize text-2xl">{task.title}</h3>
+            <p className="text-lg text-gray-600">{task.description}</p>
+          </div>  
+          <DropdownMenu>
+            <DropdownMenuTrigger >
+              <button className="text-gray-500 hover:text-gray-700 transition">
+                <EllipsisVertical size={24} />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="end"
+              className="w-48 bg-white border border-gray-200 shadow-lg rounded-md py-2"
             >
-              <EllipsisVertical />
-            </button>
-            {menuOpen && (
-              <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-300 shadow-lg rounded">
-                <button
-                  onClick={() => {
-                    handleEdit?.(task);
-                    setMenuOpen(false);
-                  }}
-                  className="flex items-center w-full px-4 py-2 text-gray-700 hover:bg-gray-100"
-                >
-                  <SquarePen className="mr-2" />
-                  Edit
-                </button>
-                <button
-                  onClick={() => {
-                    handleDelete?.(task.id);
-                    setMenuOpen(false);
-                  }}
-                  className="flex items-center w-full px-4 py-2 text-gray-700 hover:bg-gray-100"
-                >
-                  <Trash2 className="mr-2" />
-                  Delete
-                </button>
-              </div>
-            )}
-          </div>
+              <DropdownMenuItem
+                onClick={() => handleEdit?.(task)}
+                className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 hover:text-black transition text-lg"
+              >
+                <SquarePen className="mr-3 text-gray-500" size={20} />
+                Edit Task 
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleDelete?.(task.id)}
+                className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 hover:text-black transition text-lg"
+              >
+                <Trash2 className="mr-3 text-gray-500" size={20} />
+                Delete Task
+              </DropdownMenuItem>
+              <span className="text-gray-300"><hr /></span>
+              <DropdownMenuItem
+                onClick={() => handleDelete?.(task.id)}
+                className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 hover:text-black transition text-lg"
+              >
+                <Trash2 className="mr-3 text-gray-500" size={20} />
+                Delete Task
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleDelete?.(task.id)}
+                className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 hover:text-black transition text-lg"
+              >
+                <Trash2 className="mr-3 text-gray-500" size={20} />
+                Delete Task
+              </DropdownMenuItem>
+              <span className="text-gray-300"><hr /></span>
+              <DropdownMenuItem
+                onClick={() => handleDelete?.(task.id)}
+                className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 hover:text-black transition text-lg"
+              >
+                <Trash2 className="mr-3 text-gray-500" size={20} />
+                Delete Task
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       )}
     </div>

@@ -19,8 +19,8 @@ export default function Completed({ tasks, deleteTask }: Props) {
 
   return (
     <div className="bg-white completed-container" ref={setNodeRef}>
-      <div className="bg-green-500 h-[60px]">
-      <h2 className="text-xl font-bold mb-2 p-3 text-white">Completed Tasks</h2>
+      <div>
+      <h2 className="text-2xl font-bold mb-2 p-4 text-white">Completed Tasks</h2>
       </div>
       {/* <div>
         {tasks.length === 0 ? (

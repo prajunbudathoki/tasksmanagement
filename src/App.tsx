@@ -8,14 +8,13 @@ import Todo from "./components/Todo";
 import useLocalStorage from "./hooks/useLocalStorage";
 import Task, { TaskStatus } from "./types/Task";
 
-
 const App = () => {
   const [tasks, setTasks] = useLocalStorage<Task[]>("tasks", []);
-  const [newTask, setNewTask] = useState<Omit<Task, "id">>({
-    title: "",
-    description: "",
-    status: "todo",
-  });
+  // const [newTask, setNewTask] = useState<Omit<Task, "id">>({
+  //   title: "",
+  //   description: "",
+  //   status: "todo",
+  // });
 
   const handleDragEnd = (e: DragEndEvent) => {
     const { active, over } = e;
@@ -24,9 +23,7 @@ const App = () => {
     }
 
     const activeTaskId = active.id as string;
-    console.log("activetaskid", activeTaskId);
     const overId = over.id as string;
-    console.log("overid", overId);
 
     const activeTask = tasks.find((t) => t.id === activeTaskId);
     const overColumn = ["todo", "ongoing", "completed"].includes(overId)
@@ -57,21 +54,17 @@ const App = () => {
     }
   };
 
-  const handleInputChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-    const { name, value } = e.target;
-    setNewTask({ ...newTask, [name]: value });
-  };
+  // const handleInputChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+  //   const { name, value } = e.target;
+  //   setNewTask({ ...newTask, [name]: value });
+  // };
 
-  const addTask = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (newTask.title && newTask.description) {
-      setTasks([
-        ...tasks,
-        { ...newTask, id: crypto.randomUUID(), status: "todo" },
-      ]);
-      setNewTask({ title: "", description: "", status: "todo" });
-    }
-  };
+  // const addTask = (task: Omit<Task, "id">) => {
+  //   setTasks([
+  //     ...tasks,
+  //     { ...task, id: crypto.randomUUID() },
+  //   ]);
+  // };
 
   const updateTask = (id: string, updatedTask: Partial<Task>) => {
     setTasks(tasks.map((t) => (t.id === id ? { ...t, ...updatedTask } : t)));
@@ -82,25 +75,31 @@ const App = () => {
   };
 
   return (
-    <div className="min-h-screen p-10 bg-gray-900">
-      <h1 className="text-4xl text-white font-bold text-center mb-6">
+    <div className="min-h-screen p-10">
+      <h1 className="text-4xl font-bold text-center mb-6">
         Task Managements
       </h1>
 
-      <form
-        onSubmit={addTask}
+      {/* <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          if (newTask.title && newTask.description) {
+            addTask(newTask);
+            setNewTask({ title: "", description: "", status: "todo" });
+          }
+        }}
         className="bg-white p-4 mb-6 max-w-[550px] mx-auto"
       >
         <input
           name="title"
-          placeholder="Task title hre..."
+          placeholder="Task title here..."
           value={newTask.title}
           onChange={handleInputChange}
           className="w-full p-2 mb-2 border text-xl"
         />
         <input
           name="description"
-          placeholder="description goes here.."
+          placeholder="Description goes here..."
           value={newTask.description}
           onChange={handleInputChange}
           className="w-full p-2 mb-2 border text-xl"
@@ -108,13 +107,23 @@ const App = () => {
         <button type="submit" className="w-full bg-yellow-300 text-white py-2">
           Add Task
         </button>
-      </form>
+      </form> */}
 
       <DndContext onDragEnd={handleDragEnd}>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Todo
             tasks={tasks.filter((t) => t.status === "todo")}
             updateTask={updateTask}
+            addTask={(task) =>
+              setTasks([
+                ...tasks,
+                {
+                  id: crypto.randomUUID(),
+                  ...task,
+                  status: "todo",
+                },
+              ])
+            }
           />
           <Ongoing
             tasks={tasks.filter((t) => t.status === "ongoing")}
@@ -128,6 +137,7 @@ const App = () => {
       </DndContext>
     </div>
   );
-};
+}
 
-export default App;
+export default App
+ 

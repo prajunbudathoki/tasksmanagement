@@ -12,7 +12,10 @@
 
 body {
     /* background-color: var(--primary-color); */
-    user-select: none;
+    /* user-select: none; */
+      background: url("https://t4.ftcdn.net/jpg/04/08/87/37/360_F_408873710_BGALzaKeH5u7kQ2l8EzS7lHL2KaM7ad9.jpg");
+      background-repeat: no-repeat;
+      background-size: cover;
 } 
 
 .todo-container {
@@ -40,4 +43,19 @@ box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 backdrop-filter: blur(17.8px);
 -webkit-backdrop-filter: blur(17.8px);
 border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.2s ease-out forwards;
 }
