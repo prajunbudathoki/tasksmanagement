@@ -32,7 +32,7 @@ export default function Ongoing({ tasks, updateTask }: Props) {
   };
 
   return (
-    <div className="bg-white" ref={setNodeRef}>
+    <div className=" ongoing-container" ref={setNodeRef}>
       <div className="bg-yellow-500 h-[60px]">
         <h2 className="text-xl font-bold mb-2 p-3 text-white">Ongoing Tasks</h2>
         {/* <div className="min-h-[100px]">

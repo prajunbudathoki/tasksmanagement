@@ -1,7 +1,16 @@
 import Task from "@/types/Task";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { SquarePen } from "lucide-react";
+import { SquarePen, Trash2, EllipsisVertical } from "lucide-react";
+import { useState } from "react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface Props {
   task: Task;
@@ -11,6 +20,7 @@ interface Props {
   setEditedTask?: (task: { title: string; description: string }) => void;
   handleSave?: (id: string) => void;
   handleEdit?: (task: Task) => void;
+  handleDelete?: (id: string) => void;
 }
 
 export default function DraggableSortableTask({
@@ -21,6 +31,7 @@ export default function DraggableSortableTask({
   setEditedTask,
   handleSave,
   handleEdit,
+  handleDelete,
 }: Props) {
   const {
     attributes,
@@ -31,10 +42,12 @@ export default function DraggableSortableTask({
     isDragging,
   } = useSortable({ id: task.id });
 
+  const [menuOpen, setMenuOpen] = useState(false);
+
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    opacity: isDragging ? 0.5 : 3,
+    opacity: isDragging ? 0.5 : 1,
   };
 
   const isEditing = editingId === task.id;
@@ -43,18 +56,9 @@ export default function DraggableSortableTask({
     <div
       ref={setNodeRef}
       {...attributes}
-      // {...listeners}
       style={style}
       className="group relative p-4 mb-2 border border-gray-300 bg-white shadow-sm rounded cursor-grab hover:border-blue-500 hover:shadow-md transition duration-200"
     >
-      {/* grabing from the side point */}
-      {/* <div
-        {...listeners}
-        className="absolute top-2 right-2 cursor-grab text-gray-500"
-        title="Drag"
-      >
-        <GripVertical size={20} />
-      </div> */}
       {isEditing && editedTask ? (
         <div>
           <input
@@ -90,10 +94,37 @@ export default function DraggableSortableTask({
             <h3 className="font-bold capitalize text-xl">{task.title}</h3>
             <p>{task.description}</p>
           </div>
-          <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-gray-500">
-            <button onClick={() => handleEdit?.(task)} className="mt-2  ">
-              <SquarePen />
+          <div className="relative">
+            <button
+              onClick={() => setMenuOpen((prev) => !prev)}
+              className="text-gray-500"
+            >
+              <EllipsisVertical />
             </button>
+            {menuOpen && (
+              <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-300 shadow-lg rounded">
+                <button
+                  onClick={() => {
+                    handleEdit?.(task);
+                    setMenuOpen(false);
+                  }}
+                  className="flex items-center w-full px-4 py-2 text-gray-700 hover:bg-gray-100"
+                >
+                  <SquarePen className="mr-2" />
+                  Edit
+                </button>
+                <button
+                  onClick={() => {
+                    handleDelete?.(task.id);
+                    setMenuOpen(false);
+                  }}
+                  className="flex items-center w-full px-4 py-2 text-gray-700 hover:bg-gray-100"
+                >
+                  <Trash2 className="mr-2" />
+                  Delete
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}

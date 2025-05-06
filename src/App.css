@@ -1,16 +1,43 @@
 :root {
-    --primary-color: #6D6AC7;
-    --primary-text-color: #6a73d3;
-    --secondary-text-color: #aaa;
-    --white-color: #fff;
-    --light-gray-color: #f4f4f4;
-    --mid-gray-color: #e9e9e9;
-    --dark-gray-color: #1a1a1a;
-    --black-color: #000;
-    --font-base: "Open Sans",sans-serif;
-  }
+  --primary-color: #6D6AC7;
+  --primary-text-color: #6a73d3;
+  --secondary-text-color: #aaa;
+  --white-color: #fff;
+  --light-gray-color: #f4f4f4;
+  --mid-gray-color: #e9e9e9;
+  --dark-gray-color: #1a1a1a;
+  /* --black-color: #000; */
+  --font-base: "Open Sans",sans-serif;
+}
 
 body {
-    background-color: var(--primary-color);
+    /* background-color: var(--primary-color); */
     user-select: none;
 } 
+
+.todo-container {
+  background: rgba(255, 255, 255, 0.18);
+border-radius: 16px;
+box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+backdrop-filter: blur(17.8px);
+-webkit-backdrop-filter: blur(17.8px);
+border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.ongoing-container {
+  background: rgba(255, 255, 255, 0.18);
+border-radius: 16px;
+box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+backdrop-filter: blur(17.8px);
+-webkit-backdrop-filter: blur(17.8px);
+border: 1px solid rgba(255, 255, 255, 0.3);
+} 
+
+.completed-container {
+  background: rgba(255, 255, 255, 0.18);
+border-radius: 16px;
+box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+backdrop-filter: blur(17.8px);
+-webkit-backdrop-filter: blur(17.8px);
+border: 1px solid rgba(255, 255, 255, 0.3);
+}

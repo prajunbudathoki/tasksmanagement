@@ -28,7 +28,7 @@ export default function Todo({ tasks, updateTask }: Props) {
   };
 
   return (
-    <div className="bg-white rounded" ref={setNodeRef}>
+    <div className="todo-container" ref={setNodeRef}>
       <div className="bg-blue-500 h-[60px]">
         <h2 className="text-xl p-3 font-bold text-white mb-2">Todo Tasks</h2>
       </div>
