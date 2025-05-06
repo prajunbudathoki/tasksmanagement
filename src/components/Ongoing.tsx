@@ -10,11 +10,10 @@ import DraggableSortableTask from "./DraggableSortableTask";
 
 interface Props {
   tasks: Task[];
-  updateStatus: (id: string, status: TaskStatus) => void;
   updateTask: (id: string, updatedTask: Partial<Task>) => void;
 }
 
-export default function Ongoing({ tasks, updateStatus, updateTask }: Props) {
+export default function Ongoing({ tasks, updateTask }: Props) {
   const { setNodeRef } = useDroppable({ id: "ongoing" });
   // const { transform, transition } = useSortable({ id: "ongoing" });
   const [editingId, setEditingId] = useState<string | null>(null);

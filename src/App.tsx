@@ -1,16 +1,13 @@
-import React, { useState } from "react";
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
-import {
-  arrayMove,
-  SortableContext,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import Todo from "./components/Todo";
-import Ongoing from "./components/Ongoing";
+import { arrayMove } from "@dnd-kit/sortable";
+import React, { useState } from "react";
+import "./App.css";
 import Completed from "./components/Completed";
+import Ongoing from "./components/Ongoing";
+import Todo from "./components/Todo";
 import useLocalStorage from "./hooks/useLocalStorage";
 import Task, { TaskStatus } from "./types/Task";
-import "./App.css";
+
 
 const App = () => {
   const [tasks, setTasks] = useLocalStorage<Task[]>("tasks", []);
@@ -46,7 +43,7 @@ const App = () => {
       const oldIndex = columnTasks.findIndex((t) => t.id === active.id);
       const newIndex = columnTasks.findIndex((t) => t.id === over.id);
       const newColumnOrder = arrayMove(columnTasks, oldIndex, newIndex);
-      
+
       const otherTasks = tasks.filter((t) => t.status !== activeTask.status);
       setTasks([...otherTasks, ...newColumnOrder]);
     }

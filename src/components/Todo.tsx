@@ -9,11 +9,10 @@ import { useState } from "react";
 
 interface Props {
   tasks: Task[];
-  updateStatus: (id: string, status: TaskStatus) => void;
   updateTask: (id: string, updatedTask: Partial<Task>) => void;
 }
 
-export default function Todo({ tasks, updateTask, updateStatus }: Props) {
+export default function Todo({ tasks, updateTask }: Props) {
   const { setNodeRef } = useDroppable({ id: "todo" });
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editedTask, setEditedTask] = useState({ title: "", description: "" });
