@@ -7,6 +7,7 @@ import Ongoing from "./components/Ongoing";
 import Todo from "./components/Todo";
 import useLocalStorage from "./hooks/useLocalStorage";
 import Task, { TaskStatus } from "./types/Task";
+import TaskDetailsCard from "./components/TaskDetailsCard";
 
 const App = () => {
   const [tasks, setTasks] = useLocalStorage<Task[]>("tasks", []);
@@ -76,9 +77,7 @@ const App = () => {
 
   return (
     <div className="min-h-screen p-10">
-      <h1 className="text-4xl font-bold text-center mb-6">
-        Task Managements
-      </h1>
+      <h1 className="text-4xl font-bold text-center mb-6">Task Managements</h1>
 
       {/* <form
         onSubmit={(e) => {
@@ -133,11 +132,24 @@ const App = () => {
             tasks={tasks.filter((t) => t.status === "completed")}
             deleteTask={deleteTask}
           />
+          {/* <TaskDetailsCard
+            task={{
+              title: "Learn Kanbanchi basics",
+              description:
+                "Perform three tasks to learn how to create cards, lists, and share boards.",
+              assignee: "Prajun Budhathoki",
+              startDate: new Date("2025-01-12T07:58:00"),
+              dueDate: new Date("2025-05-12T16:58:00"),
+            }}
+            onDateChange={({ startDate, dueDate }) => {
+              console.log("Updated Start Date:", startDate);
+              console.log("Updated Due Date:", dueDate);
+            }}
+          /> */}
         </div>
       </DndContext>
     </div>
   );
-}
+};
 
-export default App
- 
+export default App;

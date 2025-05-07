@@ -1,7 +1,13 @@
-import Task from "@/types/Task";
+import { useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { SquarePen, Trash2, EllipsisVertical } from "lucide-react";
+import {
+  SquarePen,
+  Trash2,
+  EllipsisVertical,
+  Menu as MenuIcon,
+} from "lucide-react";
+import Task from "@/types/Task";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -46,11 +52,13 @@ export default function DraggableSortableTask({
   };
 
   const isEditing = editingId === task.id;
+  const [showDescription, setShowDescription] = useState(false);
 
   return (
     <div
       ref={setNodeRef}
       {...attributes}
+      // {...listeners}
       style={style}
       className="group relative p-3 mb-4 bg-white shadow-sm rounded-xl cursor-grab hover:border-blue-500 hover:shadow-md transition duration-200"
     >
@@ -70,7 +78,6 @@ export default function DraggableSortableTask({
               setEditedTask?.({ ...editedTask, description: e.target.value })
             }
           />
-          
           <button
             onClick={() => handleSave?.(task.id)}
             className="bg-green-500 text-white px-4 py-2 text-lg mr-2 rounded"
@@ -85,13 +92,33 @@ export default function DraggableSortableTask({
           </button>
         </div>
       ) : (
-        <div className="flex items-center justify-between ">
-          <div {...listeners} className="w-full p-2">
-            <h3 className="font-bold capitalize text-2xl">{task.title}</h3>
-            <p className="text-lg text-gray-600">{task.description}</p>
-          </div>  
+        <div className="flex items-start justify-between">
+          <div className="w-full p-2">
+            <div className="flex items-center justify-between">
+              <h3 className="font-bold capitalize text-2xl">{task.title}</h3>
+            </div>
+            <button
+              onClick={() => setShowDescription((prev) => !prev)}
+              className="mt-8 text-gray-500 hover:text-gray-700"
+            >
+              <span aria-label="card has description">
+                <MenuIcon size={20} />
+              </span>
+            </button>
+
+            {showDescription && (
+              <div className="">
+                <div className="border-t-2 mt-2">
+                  <h3 className="text-gray-500 font-bold w-full mt-3">
+                    Description
+                  </h3>
+                </div>
+                <p className="text-lg text-gray-600 mt-2">{task.description}</p>
+              </div>
+            )}
+          </div>
           <DropdownMenu>
-            <DropdownMenuTrigger >
+            <DropdownMenuTrigger>
               <button className="text-gray-500 hover:text-gray-700 transition">
                 <EllipsisVertical size={24} />
               </button>
@@ -105,31 +132,8 @@ export default function DraggableSortableTask({
                 className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 hover:text-black transition text-lg"
               >
                 <SquarePen className="mr-3 text-gray-500" size={20} />
-                Edit Task 
+                Edit Task
               </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => handleDelete?.(task.id)}
-                className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 hover:text-black transition text-lg"
-              >
-                <Trash2 className="mr-3 text-gray-500" size={20} />
-                Delete Task
-              </DropdownMenuItem>
-              <span className="text-gray-300"><hr /></span>
-              <DropdownMenuItem
-                onClick={() => handleDelete?.(task.id)}
-                className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 hover:text-black transition text-lg"
-              >
-                <Trash2 className="mr-3 text-gray-500" size={20} />
-                Delete Task
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => handleDelete?.(task.id)}
-                className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 hover:text-black transition text-lg"
-              >
-                <Trash2 className="mr-3 text-gray-500" size={20} />
-                Delete Task
-              </DropdownMenuItem>
-              <span className="text-gray-300"><hr /></span>
               <DropdownMenuItem
                 onClick={() => handleDelete?.(task.id)}
                 className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 hover:text-black transition text-lg"
