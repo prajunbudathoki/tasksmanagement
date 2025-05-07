@@ -16,6 +16,8 @@ body {
       background: url("https://t4.ftcdn.net/jpg/04/08/87/37/360_F_408873710_BGALzaKeH5u7kQ2l8EzS7lHL2KaM7ad9.jpg");
       background-repeat: no-repeat;
       background-size: cover;
+      scroll-behavior: smooth;
+      user-select: none;
 } 
 
 .todo-container {

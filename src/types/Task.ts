@@ -6,6 +6,7 @@ interface Task {
     title: string
     description: string
     status: TaskStatus
+    dueDate?: Date | null
 }
 
 export default Task
