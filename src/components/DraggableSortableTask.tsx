@@ -16,8 +16,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
+import { useDroppable } from "@dnd-kit/core";
 
 interface Props {
   task: Task;
@@ -28,7 +33,10 @@ interface Props {
   handleSave?: (id: string) => void;
   handleEdit?: (task: Task) => void;
   handleDelete?: (id: string) => void;
-  handleDateChange?: (id: string, dates: { startDate: Date | null; dueDate: Date | null }) => void;
+  handleDateChange?: (
+    id: string,
+    dates: { startDate: Date | null; dueDate: Date | null }
+  ) => void;
 }
 
 export default function DraggableSortableTask({
@@ -45,21 +53,27 @@ export default function DraggableSortableTask({
   const {
     attributes,
     listeners,
-    setNodeRef,
+    setNodeRef: setSortableNodeRef,
     transform,
-    transition,
     isDragging,
   } = useSortable({ id: task.id });
 
+  const { setNodeRef: setDroppableNodeRef } = useDroppable({
+    id: task.id,
+  });
+
   const style = {
     transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 1 : 1,
+    opacity: isDragging ? 0.5 : 1,
+    transition: "border 0.2s ease, 0.3 ease"
   };
+  // console.log(CSS.Transform.toString(transform));
 
   const isEditing = editingId === task.id;
   const [showDescription, setShowDescription] = useState(false);
-  const [startDate, setStartDate] = useState<Date | null>(task.startDate || null);
+  const [startDate, setStartDate] = useState<Date | null>(
+    task.startDate || null
+  );
   const [dueDate, setDueDate] = useState<Date | null>(task.dueDate || null);
 
   const onStartChange = (date: Date | undefined) => {
@@ -76,8 +90,12 @@ export default function DraggableSortableTask({
 
   return (
     <div
-      ref={setNodeRef}
+      ref={(node) => {
+        setSortableNodeRef(node);
+        setDroppableNodeRef(node);
+      }}
       {...attributes}
+      {...listeners}
       style={style}
       className="group relative p-3 mb-4 bg-white shadow-sm rounded-xl cursor-grab hover:border-blue-500 hover:shadow-md transition duration-200"
     >
@@ -133,50 +151,45 @@ export default function DraggableSortableTask({
                   </h3>
                 </div>
                 <p className="text-lg text-gray-600 mt-2">{task.description}</p>
-
-                <div className="mt-4 flex gap-4 items-center">
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <button className="border px-3 py-1 rounded text-sm flex items-center space-x-2 hover:bg-gray-100">
-                        <CalendarIcon className="w-4 h-4" />
-                        <span>
-                          {startDate
-                            ? format(startDate, "dd/MM/yy HH:mm")
-                            : "Start Date"}
-                        </span>
-                      </button>
-                    </PopoverTrigger>
-                    <PopoverContent className="p-0 w-auto mt-2">
-                      <Calendar
-                        mode="single"
-                        selected={startDate || undefined}
-                        onSelect={onStartChange}
-                      />
-                    </PopoverContent>
-                  </Popover>
-
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <button className="border px-3 py-1 rounded text-sm flex items-center space-x-2 hover:bg-gray-100">
-                        <CalendarIcon className="w-4 h-4" />
-                        <span>
-                          {dueDate
-                            ? format(dueDate, "dd/MM/yy HH:mm")
-                            : "Due Date"}
-                        </span>
-                      </button>
-                    </PopoverTrigger>
-                    <PopoverContent className="p-0 w-auto mt-2">
-                      <Calendar
-                        mode="single"
-                        selected={dueDate || undefined}
-                        onSelect={onDueChange}
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </div>
               </div>
             )}
+            <div className="mt-4 flex gap-4 items-center ">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button className="border px-3 py-1 text-gray-600 rounded text-sm flex items-center space-x-2 bg-gray-100 hover:text-black nodrag">
+                    <CalendarIcon className="w-4 h-4" />
+                    <span>
+                      {startDate ? format(startDate, "dd/MM/yy") : "Start Date"}
+                    </span>
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="p-0 w-auto mt-2">
+                  <Calendar
+                    mode="single"
+                    selected={startDate || undefined}
+                    onSelect={onStartChange}
+                  />
+                </PopoverContent>
+              </Popover>
+
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button className="border px-3 py-1 text-gray-600 rounded text-sm flex items-center space-x-2 bg-gray-100 hover:text-black">
+                    <CalendarIcon className="w-4 h-4" />
+                    <span>
+                      {dueDate ? format(dueDate, "dd/MM/yy") : "Due Date"}
+                    </span>
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="p-0 w-auto mt-2">
+                  <Calendar
+                    mode="single"
+                    selected={dueDate || undefined}
+                    onSelect={onDueChange}
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
           </div>
 
           <DropdownMenu>

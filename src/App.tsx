@@ -1,4 +1,11 @@
-import { DndContext, DragEndEvent } from "@dnd-kit/core";
+import {
+  DndContext,
+  DragEndEvent,
+  DragStartEvent,
+  MouseSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 import React, { useState } from "react";
 import "./App.css";
@@ -54,6 +61,12 @@ const App = () => {
       );
     }
   };
+  const mouseSensor = useSensor(MouseSensor, {
+    activationConstraint: {
+      distance: 10,
+    },
+  });
+  const sensors = useSensors(mouseSensor);
 
   // const handleInputChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
   //   const { name, value } = e.target;
@@ -108,7 +121,7 @@ const App = () => {
         </button>
       </form> */}
 
-      <DndContext onDragEnd={handleDragEnd}>
+      <DndContext onDragEnd={handleDragEnd} sensors={sensors}>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Todo
             tasks={tasks.filter((t) => t.status === "todo")}
@@ -132,7 +145,7 @@ const App = () => {
             tasks={tasks.filter((t) => t.status === "completed")}
             deleteTask={deleteTask}
           />
-          <TaskDetailsCard
+          {/* <TaskDetailsCard
             task={{
               title: "Learn Kanbanchi basics",
               description:
@@ -145,7 +158,7 @@ const App = () => {
               console.log("Updated Start Date:", startDate);
               console.log("Updated Due Date:", dueDate);
             }}
-          />
+          /> */}
         </div>
       </DndContext>
     </div>

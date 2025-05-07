@@ -51,6 +51,7 @@ export default function Completed({ tasks, deleteTask }: Props) {
       <SortableContext
         items={tasks.map((task) => task.id)}
         strategy={verticalListSortingStrategy}
+        
       >
         {tasks.length === 0 ? (
           <div>
