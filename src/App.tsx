@@ -132,7 +132,7 @@ const App = () => {
             tasks={tasks.filter((t) => t.status === "completed")}
             deleteTask={deleteTask}
           />
-          {/* <TaskDetailsCard
+          <TaskDetailsCard
             task={{
               title: "Learn Kanbanchi basics",
               description:
@@ -145,7 +145,7 @@ const App = () => {
               console.log("Updated Start Date:", startDate);
               console.log("Updated Due Date:", dueDate);
             }}
-          /> */}
+          />
         </div>
       </DndContext>
     </div>

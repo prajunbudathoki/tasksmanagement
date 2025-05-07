@@ -6,14 +6,18 @@ import {
   Trash2,
   EllipsisVertical,
   Menu as MenuIcon,
+  Calendar as CalendarIcon,
 } from "lucide-react";
 import Task from "@/types/Task";
+import { format } from "date-fns";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
 
 interface Props {
   task: Task;
@@ -24,6 +28,7 @@ interface Props {
   handleSave?: (id: string) => void;
   handleEdit?: (task: Task) => void;
   handleDelete?: (id: string) => void;
+  handleDateChange?: (id: string, dates: { startDate: Date | null; dueDate: Date | null }) => void;
 }
 
 export default function DraggableSortableTask({
@@ -35,6 +40,7 @@ export default function DraggableSortableTask({
   handleSave,
   handleEdit,
   handleDelete,
+  handleDateChange,
 }: Props) {
   const {
     attributes,
@@ -53,12 +59,25 @@ export default function DraggableSortableTask({
 
   const isEditing = editingId === task.id;
   const [showDescription, setShowDescription] = useState(false);
+  const [startDate, setStartDate] = useState<Date | null>(task.startDate || null);
+  const [dueDate, setDueDate] = useState<Date | null>(task.dueDate || null);
+
+  const onStartChange = (date: Date | undefined) => {
+    const finalDate = date || null;
+    setStartDate(finalDate);
+    handleDateChange?.(task.id, { startDate: finalDate, dueDate });
+  };
+
+  const onDueChange = (date: Date | undefined) => {
+    const finalDate = date || null;
+    setDueDate(finalDate);
+    handleDateChange?.(task.id, { startDate, dueDate: finalDate });
+  };
 
   return (
     <div
       ref={setNodeRef}
       {...attributes}
-      // {...listeners}
       style={style}
       className="group relative p-3 mb-4 bg-white shadow-sm rounded-xl cursor-grab hover:border-blue-500 hover:shadow-md transition duration-200"
     >
@@ -107,16 +126,59 @@ export default function DraggableSortableTask({
             </button>
 
             {showDescription && (
-              <div className="">
+              <div>
                 <div className="border-t-2 mt-2">
                   <h3 className="text-gray-500 font-bold w-full mt-3">
                     Description
                   </h3>
                 </div>
                 <p className="text-lg text-gray-600 mt-2">{task.description}</p>
+
+                <div className="mt-4 flex gap-4 items-center">
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <button className="border px-3 py-1 rounded text-sm flex items-center space-x-2 hover:bg-gray-100">
+                        <CalendarIcon className="w-4 h-4" />
+                        <span>
+                          {startDate
+                            ? format(startDate, "dd/MM/yy HH:mm")
+                            : "Start Date"}
+                        </span>
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="p-0 w-auto mt-2">
+                      <Calendar
+                        mode="single"
+                        selected={startDate || undefined}
+                        onSelect={onStartChange}
+                      />
+                    </PopoverContent>
+                  </Popover>
+
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <button className="border px-3 py-1 rounded text-sm flex items-center space-x-2 hover:bg-gray-100">
+                        <CalendarIcon className="w-4 h-4" />
+                        <span>
+                          {dueDate
+                            ? format(dueDate, "dd/MM/yy HH:mm")
+                            : "Due Date"}
+                        </span>
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="p-0 w-auto mt-2">
+                      <Calendar
+                        mode="single"
+                        selected={dueDate || undefined}
+                        onSelect={onDueChange}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
               </div>
             )}
           </div>
+
           <DropdownMenu>
             <DropdownMenuTrigger>
               <button className="text-gray-500 hover:text-gray-700 transition">

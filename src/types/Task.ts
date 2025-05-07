@@ -6,6 +6,7 @@ interface Task {
     title: string
     description: string
     status: TaskStatus
+    startDate?: Date | null
     dueDate?: Date | null
 }
 
