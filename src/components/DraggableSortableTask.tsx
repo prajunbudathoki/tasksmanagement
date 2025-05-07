@@ -65,7 +65,7 @@ export default function DraggableSortableTask({
   const style = {
     transform: CSS.Transform.toString(transform),
     opacity: isDragging ? 0.5 : 1,
-    transition: "border 0.2s ease, 0.3 ease"
+    transition: "border 0.2s ease, 0.3 ease",
   };
   // console.log(CSS.Transform.toString(transform));
 

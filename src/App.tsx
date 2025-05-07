@@ -15,6 +15,7 @@ import Todo from "./components/Todo";
 import useLocalStorage from "./hooks/useLocalStorage";
 import Task, { TaskStatus } from "./types/Task";
 import TaskDetailsCard from "./components/TaskDetailsCard";
+import { Sidebar } from "./components/SideBar";
 
 const App = () => {
   const [tasks, setTasks] = useLocalStorage<Task[]>("tasks", []);
@@ -89,10 +90,13 @@ const App = () => {
   };
 
   return (
-    <div className="min-h-screen p-10">
-      <h1 className="text-4xl font-bold text-center mb-6">Task Managements</h1>
-
-      {/* <form
+    <div className="flex">
+      <Sidebar />
+      <div className="min-h-screen p-1">
+        <h1 className="text-4xl font-bold text-center mb-6">
+          {/* Task Managements */}
+        </h1>
+        {/* <form
         onSubmit={(e) => {
           e.preventDefault();
           if (newTask.title && newTask.description) {
@@ -120,32 +124,32 @@ const App = () => {
           Add Task
         </button>
       </form> */}
-
-      <DndContext onDragEnd={handleDragEnd} sensors={sensors}>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Todo
-            tasks={tasks.filter((t) => t.status === "todo")}
-            updateTask={updateTask}
-            addTask={(task) =>
-              setTasks([
-                ...tasks,
-                {
-                  id: crypto.randomUUID(),
-                  ...task,
-                  status: "todo",
-                },
-              ])
-            }
-          />
-          <Ongoing
-            tasks={tasks.filter((t) => t.status === "ongoing")}
-            updateTask={updateTask}
-          />
-          <Completed
-            tasks={tasks.filter((t) => t.status === "completed")}
-            deleteTask={deleteTask}
-          />
-          {/* <TaskDetailsCard
+        <div>
+          <DndContext onDragEnd={handleDragEnd} sensors={sensors}>
+            <div className="ml-2 not-only:grid grid-cols-1 md:grid-cols-3 gap-3">
+              <Todo
+                tasks={tasks.filter((t) => t.status === "todo")}
+                updateTask={updateTask}
+                addTask={(task) =>
+                  setTasks([
+                    ...tasks,
+                    {
+                      id: crypto.randomUUID(),
+                      ...task,
+                      status: "todo",
+                    },
+                  ])
+                }
+              />
+              <Ongoing
+                tasks={tasks.filter((t) => t.status === "ongoing")}
+                updateTask={updateTask}
+              />
+              <Completed
+                tasks={tasks.filter((t) => t.status === "completed")}
+                deleteTask={deleteTask}
+              />
+              {/* <TaskDetailsCard
             task={{
               title: "Learn Kanbanchi basics",
               description:
@@ -159,8 +163,10 @@ const App = () => {
               console.log("Updated Due Date:", dueDate);
             }}
           /> */}
+            </div>
+          </DndContext>
         </div>
-      </DndContext>
+      </div>
     </div>
   );
 };

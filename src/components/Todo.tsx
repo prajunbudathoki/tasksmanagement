@@ -49,7 +49,7 @@ export default function Todo({ tasks, updateTask, addTask }: Props) {
       ref={setNodeRef}
     >
       <div className="flex items-center justify-between p-5">
-        <h2 className="text-2xl font-bold">Todo Tasks</h2>
+        <h2 className="text-2xl font-bold text-white">Todo Tasks</h2>
         <button
           className="hover:scale-110 transition-transform"
           onClick={() => setShowForm(true)}
