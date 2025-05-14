@@ -28,7 +28,7 @@ export function Sidebar() {
       <div>
         <div className="flex items-center justify-between px-4 py-3  border-b-3">
           {!collapsed && (
-            <span className="text-lg font-bold text-purple-700">Kanbanchi  lite</span>
+            <span className="text-lg font-bold">Big bracket pvt ltd</span>
           )}
           <button onClick={() => setCollapsed(!collapsed)}>
             {collapsed ? (
@@ -42,11 +42,10 @@ export function Sidebar() {
           {menuItems.map((item, idx) => (
             <div
               key={idx}
-              className={`flex items-center px-4 py-2 cursor-pointer hover:bg-purple-100 ${
-                item.highlight ? 'bg-purple-200' : ''
+              className={`flex items-center px-4 py-2 cursor-pointer hover:bg-purple-100 
               }`}
             >
-              <item.icon className="h-5 w-5 text-purple-700" />
+              <item.icon className="h-5 w-5 " />
               {!collapsed && (
                 <span className="ml-3 text-sm text-gray-800">{item.label}</span>
               )}
