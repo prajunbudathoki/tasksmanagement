@@ -59,6 +59,7 @@ export function Sidebar() {
           alt="avatar"
           className="h-8 w-8 rounded-full"
         />
+        {/* pending work to done*/}
         {!collapsed && (
           <div>
             <div className="text-sm font-medium">Prajun Budhathoki</div>
