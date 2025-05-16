@@ -60,6 +60,7 @@ export function Sidebar() {
           className="h-8 w-8 rounded-full"
         />
         {/* pending work to done*/}
+        {/* work in progress */}
         {!collapsed && (
           <div>
             <div className="text-sm font-medium">Prajun Budhathoki</div>
